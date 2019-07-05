@@ -187,15 +187,14 @@ public:
     }
 
     void step() {
-        double strength;
-
         for(auto& stim : stims){
-            auto move_start = Clock::now();
             stim.move();
+
             for(auto& cell : cells){
                 cell -> stimulate(stim);
             }
         }
+        //std::cout << "\n";
 
         for(auto& cell : cells){
             cell -> decay();

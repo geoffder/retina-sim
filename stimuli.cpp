@@ -18,6 +18,7 @@ using namespace Eigen;
 typedef void (*Stimuli) (NetworkModel &net, double cx, double cy, std::string &netFolder);
 
 std::array<double, 4> HALF_DIRECTIONS = {0, 45, 90, 135};
+std::array<double, 4> CARDINALS = {0, 90, 180, 270};
 std::array<double, 8> DIRECTIONS = {0, 45, 90, 135, 180, 225, 270, 315};
 
 std::array<double, 2> getStartPos(double cx, double cy, double dir){
@@ -190,20 +191,60 @@ void dir_small_dark_collision(NetworkModel &net, double cx, double cy, std::stri
     }
 }
 
+void dir_small_light_turner(NetworkModel &net, double cx, double cy, std::string &netFolder) {
+    std::cout << "Running small_light_turner... \ndirs:" << std::endl;
+    double vel = .3;
+    double dist2centre;
+    double turn_time;
+    for (auto &dir : CARDINALS) {
+        auto start_pos = getStartPos(cx, cy, dir);
+        dist2centre = sqrt(pow(start_pos[0] - cx, 2) + pow(start_pos[1] - cy, 2));
+        turn_time = dist2centre / vel;
+        for (auto &turn: {-90, 90}) {
+            std::cout << dir << " -> " << dir+turn << " ";
+            net.newStim(start_pos, 0, turn_time, vel, dir, -dir, 1, 0, "circle", 25);
+            net.newStim({cx, cy}, turn_time, 3000, vel, dir+turn, -(dir+turn), 1, 0, "circle", 25);
+            net.run(netFolder, "small_light_circle" + std::to_string(std::lround(dir)) + "_turn" + std::to_string(turn));
+            net.clearStims();
+        }
+    }
+}
+
+void dir_small_dark_turner(NetworkModel &net, double cx, double cy, std::string &netFolder) {
+    std::cout << "Running small_dark_turner... \ndirs:" << std::endl;
+    double vel = .3;
+    double dist2centre;
+    int turn_time;
+    for (auto &dir : CARDINALS) {
+        auto start_pos = getStartPos(cx, cy, dir);
+        dist2centre = sqrt(pow(start_pos[0] - cx, 2) + pow(start_pos[1] - cy, 2));
+        turn_time = int(dist2centre / vel);
+        for (auto &turn: {-90, 90}) {
+            std::cout << dir << " -> " << dir+turn << " ";
+            net.newStim(start_pos, 0, turn_time, vel, dir, -dir, -1, 0, "circle", 25);
+            net.newStim({cx, cy}, turn_time, 3000, vel, dir+turn, -(dir+turn), -1, 0, "circle", 25);
+            net.run(netFolder, "small_dark_circle" + std::to_string(std::lround(dir)) + "_turn" + std::to_string(turn));
+            net.clearStims();
+        }
+    }
+}
+
 void runExperiment_1(NetworkModel &net, std::string &netFolder) {
     auto[cx, cy] = net.getOrigin();
 
     std::vector<Stimuli> stim_list = {
-            dir_thin_light_bar,
-            dir_med_light_bar,
-            dir_thick_light_bar,
-            dir_thin_dark_bar,
-            dir_med_dark_bar,
-            dir_thick_dark_bar,
-            dir_small_light_circle,
-            dir_small_dark_circle,
-            dir_small_light_collision,
-            dir_small_dark_collision
+//            dir_thin_light_bar,
+//            dir_med_light_bar,
+//            dir_thick_light_bar,
+//            dir_thin_dark_bar,
+//            dir_med_dark_bar,
+//            dir_thick_dark_bar,
+//            dir_small_light_circle,
+//            dir_small_dark_circle,
+//            dir_small_light_collision,
+//            dir_small_dark_collision,
+            dir_small_light_turner,
+//            dir_small_dark_turner
 
     };
 

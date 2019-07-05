@@ -43,7 +43,7 @@ int main() {
     std::array<int, 2> net_dims = {350, 350};  // 700, 700
     NetworkModel net(net_dims, 100, 3000, 5.0);  // 200 margins for 700, 700
 
-    for(int i = 0; i < 20; ++i) {
+    for(int i = 0; i < 1; ++i) {
         // fill the empty network object with cells
         std::cout << "Constructing net" << i << "..." << std::endl;
         net.populate(10, 5.0);
