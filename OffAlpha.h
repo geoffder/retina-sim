@@ -64,7 +64,7 @@ public:
 
         double strength = (centre_overlap.sum() - std::max(0, surround_overlap.sum())*.1) * abs(stim.getAmp());
 
-        Vm += sustained*tonic*.04 + strength*(sustained ? .24 : 4);
+        Vm += sustained*tonic*.02 + strength*(sustained ? .12 : 4);
     }
 
     // override base method to add in sustained/transient identifier

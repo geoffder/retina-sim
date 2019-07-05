@@ -214,7 +214,7 @@ public:
         ++runs;
         runToFile(folder, label);
         auto run_time = std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - run_start).count();
-        std::cout << run_time << " milliseconds run time\n";
+        std::cout << " | " << run_time << " milliseconds run time\n";
     }
 
     void runToFile(const std::string &folder, const std::string &label) {
