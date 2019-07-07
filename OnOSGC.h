@@ -23,16 +23,16 @@ protected:
 
 public:
     OnOSGC(Eigen::VectorXd &xgrid, Eigen::VectorXd &ygrid, Eigen::VectorXd &xOnes, Eigen::VectorXd &yOnes,
-            const double net_dt, const std::array<double, 2> cell_pos, std::mt19937 &gen)
+            const int space_redux, const double net_dt, const std::array<double, 2> cell_pos, std::mt19937 &gen)
             :Cell(xgrid, ygrid, xOnes, yOnes, net_dt, cell_pos) {
         type = "OnOSGC";
         // spatial properties
-        diam = 8;  // of soma (old 15)
+        diam = 16/space_redux;  // of soma (old 15)
         somaMask = circleMask(*net_xvec, *net_yvec, *net_xOnes, *net_yOnes, pos, diam/2);
         // Orientation-selective properties
-        axis0 = 25;
-        axis1 = 100;
-        surround_rad = 100;
+        axis0 = 50/space_redux;
+        axis1 = 200/space_redux;
+        surround_rad = 200/space_redux;
         theta = rollPreferred(gen);  // choose a cardinal direction preference for this cell
         std::tie(rfCentre, rfSurround) = buildRF(*net_xvec, *net_yvec, *net_xOnes, *net_yOnes, pos, axis0, axis1, surround_rad, theta);
         rfCentre_sparse = rfCentre.sparseView();  // convert from dense matrix to sparse

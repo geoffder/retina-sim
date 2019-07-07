@@ -14,13 +14,13 @@
 class OnAlpha : public Cell {
 public:
     OnAlpha(Eigen::VectorXd &xgrid, Eigen::VectorXd &ygrid, Eigen::VectorXd &xOnes, Eigen::VectorXd &yOnes,
-            const double net_dt, const std::array<double, 2> cell_pos, std::mt19937 &gen)
+            const int space_redux, const double net_dt, const std::array<double, 2> cell_pos, std::mt19937 &gen)
             :Cell(xgrid, ygrid, xOnes, yOnes, net_dt, cell_pos) {
         type = "OnAlpha";
         // spatial properties
-        diam = 8;  // 15
-        centre_rad = 100;  // 200
-        surround_rad = 200;
+        diam = 16/space_redux;  // 15
+        centre_rad = 200/space_redux;  // 200
+        surround_rad = 400/space_redux;
         somaMask = circleMask(*net_xvec, *net_yvec, *net_xOnes, *net_yOnes, pos, diam/2);
         std::tie(rfCentre, rfSurround) = buildRF(*net_xvec, *net_yvec, *net_xOnes, *net_yOnes, pos, centre_rad, surround_rad);
         rfCentre_sparse = rfCentre.sparseView();  // convert from dense matrix to sparse

@@ -15,7 +15,8 @@
 
 class Stim {
 private:
-    std::array<int, 2> dims;                             // dimensions of network model this cell belongs to
+    std::array<int, 3> dims;                  // network dimensions {X, Y, space_redux}
+    int reduX, reduY;
     Eigen::VectorXd * net_xvec;             // pointer to network X range grid used for generation of masks
     Eigen::VectorXd * net_yvec;             // pointer to network Y range grid used for generation of masks
     Eigen::VectorXd * net_xOnes;
@@ -45,12 +46,13 @@ private:
     std::vector<double> orientRec;           // stored angle of orientation from each timestep
 
 public:
-    Stim(const std::array<int, 2> net_dims, Eigen::VectorXd &xgrid, Eigen::VectorXd &ygrid,
+    Stim(const std::array<int, 3> net_dims, Eigen::VectorXd &xgrid, Eigen::VectorXd &ygrid,
             Eigen::VectorXd &xOnes, Eigen::VectorXd &yOnes, const int net_dt, const std::array<double, 2> start_pos,
             const double time_on, const double time_off, const double velocity, const double direction,
             const double orientation, const double amplitude, const double change) {
         // network properties
         dims = net_dims;
+        reduX = dims[0]/dims[2], reduY = dims[1]/dims[2];
         net_xvec = &xgrid;
         net_yvec = &ygrid;
         net_xOnes = &xOnes;
@@ -73,8 +75,8 @@ public:
         amp = amplitude;
         dAmp = change;
         // initialize
-        mask = Eigen::MatrixXi::Zero(dims[0], dims[1]);
-        delta = Eigen::MatrixXi::Zero(dims[0], dims[1]);
+        mask = Eigen::MatrixXi::Zero(reduX, reduY);
+        delta = Eigen::MatrixXi::Zero(reduX, reduY);
         mask_sparse = mask.sparseView();
         delta_sparse = delta.sparseView();
     }
@@ -129,7 +131,6 @@ public:
         if ((t >= tOff) && alive) {
             alive = false;
             mask = mask.array() * 0;
-            //mask = Eigen::MatrixXi::Zero(dims[0], dims[1]);
         } else {
             if (type == "bar") {
                 mask = rectMask(net_xvec, net_yvec, net_xOnes, net_yOnes, pos, orient, width, length);
@@ -143,7 +144,6 @@ public:
             }
         }
         delta = mask - old_mask;
-        //std::cout << "moved ";
     }
 
     // update centre coordinate of stimulus (if moving), then redraw mask
@@ -161,7 +161,6 @@ public:
         } else if (!alive && (delta.nonZeros() > 0)) {
             // zero out delta so it doesn't remain forever after stim turns off
             delta = delta.array() * 0;
-            //delta = Eigen::MatrixXi::Zero(dims[0], dims[1]);
             delta_sparse = delta.sparseView();
         }
 

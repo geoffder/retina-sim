@@ -29,7 +29,8 @@
 
 class NetworkModel {
 private:
-    std::array<int, 2> dims;
+    std::array<int, 3> dims;               // network dimensions {X, Y, space_redux}
+    int reduX, reduY;
     std::array<double, 2> origin;
     Eigen::VectorXd xvec;                  // coordinate range (along rows) grid used to calculate masks
     Eigen::VectorXd yvec;                  // coordinate range (down columns) grid used to calculate masks
@@ -50,14 +51,15 @@ private:
     std::mt19937 gen;  // mersenne_twister_engine, to be seeded with rd
 
 public:
-    NetworkModel(const std::array<int, 2> net_dims, const int cell_margin, const int time_stop, const double delta) {
+    NetworkModel(const std::array<int, 3> net_dims, const int cell_margin, const int time_stop, const double delta) {
         // spatial
         dims = net_dims;
-        origin[0] = dims[0]/2.0, origin[1] = dims[1]/2.0;
-        std::tie(xvec, yvec) = gridVecs(dims[0], dims[1]);
-        xOnes = Eigen::VectorXd::Ones(dims[0]);
-        yOnes = Eigen::VectorXd::Ones(dims[1]);
-        margin = cell_margin;
+        reduX = dims[0]/dims[2], reduY = dims[1]/dims[2];
+        origin[0] = reduX/2.0, origin[1] = reduY/2.0;
+        std::tie(xvec, yvec) = gridVecs(reduX, reduY);
+        xOnes = Eigen::VectorXd::Ones(reduX);
+        yOnes = Eigen::VectorXd::Ones(reduY);
+        margin = cell_margin/dims[2];
         // temporal
         tstop = time_stop;
         dt = delta;
@@ -76,8 +78,8 @@ public:
         std::array<double, 2> pos = {0, 0};
 
         // Regularly spaced axes giving the default layout of cells in the network.
-        Eigen::VectorXd xgridvec = Eigen::VectorXd::LinSpaced((dims[1]-margin*2)/spacing, margin, dims[1]-margin);
-        Eigen::VectorXd ygridvec = Eigen::VectorXd::LinSpaced((dims[1]-margin*2)/spacing, margin, dims[1]-margin);
+        Eigen::VectorXd xgridvec = Eigen::VectorXd::LinSpaced((reduX-margin*2)/spacing, margin, reduX-margin);
+        Eigen::VectorXd ygridvec = Eigen::VectorXd::LinSpaced((reduY-margin*2)/spacing, margin, reduY-margin);
 
         // uniform distribution for angle cell is offset from grid-point
         std::uniform_real_distribution<> Uniform(0, 1.0);
@@ -105,17 +107,17 @@ public:
         int r = IntDist(gen);
         switch (r) {
             case 0:
-                return new OnDSGC(xvec, yvec, xOnes, yOnes, dt, cell_pos, gen);
+                return new OnDSGC(xvec, yvec, xOnes, yOnes, dims[2], dt, cell_pos, gen);
             case 1:
-                return new OnOffDSGC(xvec, yvec, xOnes, yOnes, dt, cell_pos, gen);
+                return new OnOffDSGC(xvec, yvec, xOnes, yOnes, dims[2], dt, cell_pos, gen);
             case 2:
-                return new LocalEdgeDetector(xvec, yvec, xOnes, yOnes, dt, cell_pos);
+                return new LocalEdgeDetector(xvec, yvec, xOnes, yOnes, dims[2], dt, cell_pos);
             case 3:
-                return new OnAlpha(xvec, yvec, xOnes, yOnes, dt, cell_pos, gen);
+                return new OnAlpha(xvec, yvec, xOnes, yOnes, dims[2], dt, cell_pos, gen);
             case 4:
-                return new OffAlpha(xvec, yvec, xOnes, yOnes, dt, cell_pos, gen);
+                return new OffAlpha(xvec, yvec, xOnes, yOnes, dims[2], dt, cell_pos, gen);
             case 5:
-                return new OnOSGC(xvec, yvec, xOnes, yOnes, dt, cell_pos, gen);
+                return new OnOSGC(xvec, yvec, xOnes, yOnes, dims[2], dt, cell_pos, gen);
             default:
                 return nullptr; // should never come here...
         }
@@ -245,8 +247,8 @@ public:
         // global parameters of the network
         std::ofstream netParamFile;
         netParamFile.open(folder + "/netParams.txt");
-        netParamFile << R"({"xdim": )" << dims[0] << R"(, "ydim": )" << dims[1] << R"(, "margin": )" << margin;
-        netParamFile << R"(, "tstop": )" << tstop << R"(, "dt": )" << dt << "}";
+        netParamFile << R"({"xdim": )" << dims[0] << R"(, "ydim": )" << dims[1] << R"(, "margin": )" << margin*dims[2];
+        netParamFile << R"(, "space_redux": )" << dims[2] << R"(, "tstop": )" << tstop << R"(, "dt": )" << dt << "}";
         netParamFile.close();
         // parameters for each cell in the network
         std::ofstream cellParamFile;
@@ -259,7 +261,7 @@ public:
 
     // Add up spatial masks of all cells and their receptive fields for display (for output to file)
     Eigen::MatrixXd cellMatrix() {
-        Eigen::MatrixXd mat = Eigen::MatrixXd::Zero(dims[0], dims[1]);
+        Eigen::MatrixXd mat = Eigen::MatrixXd::Zero(reduX, reduY);
         for(auto& cell : cells){
             mat += cell -> getSoma().cast<double>();
             mat += cell -> getRFCentre().cast<double>()*.2;

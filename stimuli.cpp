@@ -17,6 +17,7 @@ using namespace Eigen;
 
 typedef void (*Stimuli) (NetworkModel &net, double cx, double cy, std::string &netFolder);
 
+double REDUX = 4;
 std::array<double, 4> HALF_DIRECTIONS = {0, 45, 90, 135};
 std::array<double, 4> CARDINALS = {0, 90, 180, 270};
 std::array<double, 8> DIRECTIONS = {0, 45, 90, 135, 180, 225, 270, 315};
@@ -30,7 +31,7 @@ void dir_thin_light_bar(NetworkModel &net, double cx, double cy, std::string &ne
     for (auto &dir : DIRECTIONS) {
         std::cout << dir << " ";
         auto start_pos = getStartPos(cx, cy, dir);
-        net.newStim(start_pos, 0, 3000, .3, dir, -dir, 1, 0, "bar", 0, 15, 300);
+        net.newStim(start_pos, 0, 3000, .3, dir, -dir, 1, 0, "bar", 0, 30/REDUX, 600/REDUX);
         net.run(netFolder, "thin_light_bar" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -41,7 +42,7 @@ void dir_med_light_bar(NetworkModel &net, double cx, double cy, std::string &net
     for (auto &dir : DIRECTIONS) {
         std::cout << dir << " ";
         auto start_pos = getStartPos(cx, cy, dir);
-        net.newStim(start_pos, 0, 3000, .3, dir, -dir, 1, 0, "bar", 0, 50, 300);
+        net.newStim(start_pos, 0, 3000, .3, dir, -dir, 1, 0, "bar", 0, 100/REDUX, 600/REDUX);
         net.run(netFolder, "med_light_bar" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -52,7 +53,7 @@ void dir_thick_light_bar(NetworkModel &net, double cx, double cy, std::string &n
     for (auto &dir : DIRECTIONS) {
         std::cout << dir << " ";
         auto start_pos = getStartPos(cx, cy, dir);
-        net.newStim(start_pos, 0, 3000, .3, dir, -dir, 1, 0, "bar", 0, 200, 300);
+        net.newStim(start_pos, 0, 3000, .3, dir, -dir, 1, 0, "bar", 0, 400/REDUX, 600/REDUX);
         net.run(netFolder, "thick_light_bar" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -63,7 +64,7 @@ void dir_thin_dark_bar(NetworkModel &net, double cx, double cy, std::string &net
     for (auto &dir : DIRECTIONS) {
         std::cout << dir << " ";
         auto start_pos = getStartPos(cx, cy, dir);
-        net.newStim(start_pos, 0, 3000, .3, dir, -dir, -1, 0, "bar", 0, 15, 300);
+        net.newStim(start_pos, 0, 3000, .3, dir, -dir, -1, 0, "bar", 0, 30/REDUX, 600/REDUX);
         net.run(netFolder, "thin_dark_bar" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -74,7 +75,7 @@ void dir_med_dark_bar(NetworkModel &net, double cx, double cy, std::string &netF
     for (auto &dir : DIRECTIONS) {
         std::cout << dir << " ";
         auto start_pos = getStartPos(cx, cy, dir);
-        net.newStim(start_pos, 0, 3000, .3, dir, -dir, -1, 0, "bar", 0, 50, 300);
+        net.newStim(start_pos, 0, 3000, .3, dir, -dir, -1, 0, "bar", 0, 100/REDUX, 600/REDUX);
         net.run(netFolder, "med_dark_bar" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -85,7 +86,7 @@ void dir_thick_dark_bar(NetworkModel &net, double cx, double cy, std::string &ne
     for (auto &dir : DIRECTIONS) {
         std::cout << dir << " ";
         auto start_pos = getStartPos(cx, cy, dir);
-        net.newStim(start_pos, 0, 3000, .3, dir, -dir, -1, 0, "bar", 0, 200, 300);
+        net.newStim(start_pos, 0, 3000, .3, dir, -dir, -1, 0, "bar", 0, 400/REDUX, 600/REDUX);
         net.run(netFolder, "thick_dark_bar" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -97,7 +98,7 @@ void dir_thin_light_ellipse(NetworkModel &net, double cx, double cy, std::string
     for (auto &dir : DIRECTIONS) {
         std::cout << dir << " ";
         auto start_pos = getStartPos(cx, cy, dir);
-        net.newStim(start_pos, 0, 3000, .3, dir, -dir, 1, 0, "ellipse", 0, 15, 300);
+        net.newStim(start_pos, 0, 3000, .3, dir, -dir, 1, 0, "ellipse", 0, 30/REDUX, 600/REDUX);
         net.run(netFolder, "thin_light_ellipse" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -109,7 +110,7 @@ void dir_thick_light_ellipse(NetworkModel &net, double cx, double cy, std::strin
     for (auto &dir : DIRECTIONS) {
         std::cout << dir << " ";
         auto start_pos = getStartPos(cx, cy, dir);
-        net.newStim(start_pos, 0, 3000, .3, dir, -dir, 1, 0, "ellipse", 0, 100, 300);
+        net.newStim(start_pos, 0, 3000, .3, dir, -dir, 1, 0, "ellipse", 0, 200/REDUX, 600/REDUX);
         net.run(netFolder, "thick_light_ellipse" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -121,7 +122,7 @@ void dir_thin_dark_ellipse(NetworkModel &net, double cx, double cy, std::string 
     for (auto &dir : DIRECTIONS) {
         std::cout << dir << " ";
         auto start_pos = getStartPos(cx, cy, dir);
-        net.newStim(start_pos, 0, 3000, .3, dir, -dir, -1, 0, "ellipse", 0, 15, 300);
+        net.newStim(start_pos, 0, 3000, .3, dir, -dir, -1, 0, "ellipse", 0, 30/REDUX, 600/REDUX);
         net.run(netFolder, "thin_dark_ellipse" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -133,7 +134,7 @@ void dir_thick_dark_ellipse(NetworkModel &net, double cx, double cy, std::string
     for (auto &dir : DIRECTIONS) {
         std::cout << dir << " ";
         auto start_pos = getStartPos(cx, cy, dir);
-        net.newStim(start_pos, 0, 3000, .3, dir, -dir, -1, 0, "ellipse", 0, 100, 300);
+        net.newStim(start_pos, 0, 3000, .3, dir, -dir, -1, 0, "ellipse", 0, 200/REDUX, 600/REDUX);
         net.run(netFolder, "thick_dark_ellipse" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -144,7 +145,7 @@ void dir_small_light_circle(NetworkModel &net, double cx, double cy, std::string
     for (auto &dir : DIRECTIONS) {
         std::cout << dir << " ";
         auto start_pos = getStartPos(cx, cy, dir);
-        net.newStim(start_pos, 0, 3000, .3, dir, -dir, 1, 0, "circle", 25);
+        net.newStim(start_pos, 0, 3000, .3, dir, -dir, 1, 0, "circle", 50/REDUX);
         net.run(netFolder, "small_light_circle" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -155,7 +156,7 @@ void dir_small_dark_circle(NetworkModel &net, double cx, double cy, std::string 
     for (auto &dir : DIRECTIONS) {
         std::cout << dir << " ";
         auto start_pos = getStartPos(cx, cy, dir);
-        net.newStim(start_pos, 0, 3000, .3, dir, -dir, -1, 0, "circle", 25);
+        net.newStim(start_pos, 0, 3000, .3, dir, -dir, -1, 0, "circle", 50/REDUX);
         net.run(netFolder, "small_dark_circle" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -169,8 +170,8 @@ void dir_small_light_collision(NetworkModel &net, double cx, double cy, std::str
         auto start_pos1 = getStartPos(cx, cy, dir);
         auto start_pos2 = getStartPos(cx, cy, dir+180);
         // moving in opposite directions
-        net.newStim(start_pos1, 0, 3000, .3, dir, -dir, 1, 0, "circle", 25);
-        net.newStim(start_pos2, 0, 3000, .3, dir+180, -(dir+180), 1, 0, "circle", 25);
+        net.newStim(start_pos1, 0, 3000, .3, dir, -dir, 1, 0, "circle", 50/REDUX);
+        net.newStim(start_pos2, 0, 3000, .3, dir+180, -(dir+180), 1, 0, "circle", 50/REDUX);
         net.run(netFolder, "small_light_collision" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -184,8 +185,8 @@ void dir_small_dark_collision(NetworkModel &net, double cx, double cy, std::stri
         auto start_pos1 = getStartPos(cx, cy, dir);
         auto start_pos2 = getStartPos(cx, cy, dir+180);
         // moving in opposite directions
-        net.newStim(start_pos1, 0, 3000, .3, dir, -dir, -1, 0, "circle", 25);
-        net.newStim(start_pos2, 0, 3000, .3, dir+180, -(dir+180), -1, 0, "circle", 25);
+        net.newStim(start_pos1, 0, 3000, .3, dir, -dir, -1, 0, "circle", 50/REDUX);
+        net.newStim(start_pos2, 0, 3000, .3, dir+180, -(dir+180), -1, 0, "circle", 50/REDUX);
         net.run(netFolder, "small_dark_collision" + std::to_string(std::lround(dir)));
         net.clearStims();
     }
@@ -195,15 +196,15 @@ void dir_small_light_turner(NetworkModel &net, double cx, double cy, std::string
     std::cout << "Running small_light_turner... \ndirs:" << std::endl;
     double vel = .3;
     double dist2centre;
-    double turn_time;
+    int turn_time;
     for (auto &dir : CARDINALS) {
         auto start_pos = getStartPos(cx, cy, dir);
         dist2centre = sqrt(pow(start_pos[0] - cx, 2) + pow(start_pos[1] - cy, 2));
-        turn_time = dist2centre / vel;
+        turn_time = int(dist2centre / vel);
         for (auto &turn: {-90, 90}) {
             std::cout << dir << " -> " << dir+turn << " ";
-            net.newStim(start_pos, 0, turn_time, vel, dir, -dir, 1, 0, "circle", 25);
-            net.newStim({cx, cy}, turn_time, 3000, vel, dir+turn, -(dir+turn), 1, 0, "circle", 25);
+            net.newStim(start_pos, 0, turn_time, vel, dir, -dir, 1, 0, "circle", 50/REDUX);
+            net.newStim({cx, cy}, turn_time, 3000, vel, dir+turn, -(dir+turn), 1, 0, "circle", 50/REDUX);
             net.run(netFolder, "small_light_circle" + std::to_string(std::lround(dir)) + "_turn" + std::to_string(turn));
             net.clearStims();
         }
@@ -221,8 +222,8 @@ void dir_small_dark_turner(NetworkModel &net, double cx, double cy, std::string 
         turn_time = int(dist2centre / vel);
         for (auto &turn: {-90, 90}) {
             std::cout << dir << " -> " << dir+turn << " ";
-            net.newStim(start_pos, 0, turn_time, vel, dir, -dir, -1, 0, "circle", 25);
-            net.newStim({cx, cy}, turn_time, 3000, vel, dir+turn, -(dir+turn), -1, 0, "circle", 25);
+            net.newStim(start_pos, 0, turn_time, vel, dir, -dir, -1, 0, "circle", 50/REDUX);
+            net.newStim({cx, cy}, turn_time, 3000, vel, dir+turn, -(dir+turn), -1, 0, "circle", 50/REDUX);
             net.run(netFolder, "small_dark_circle" + std::to_string(std::lround(dir)) + "_turn" + std::to_string(turn));
             net.clearStims();
         }
