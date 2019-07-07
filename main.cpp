@@ -41,12 +41,12 @@ int main() {
 
 
     std::array<int, 3> net_dims = {700, 700, 4};  // third element is spatial downsampling factor
-    NetworkModel net(net_dims, 200, 3000, 5.0);  // 200 margins for 700, 700
+    NetworkModel net(net_dims, 200, 3000, 5.0);  // margin is subject to downsampling
 
     for(int i = 0; i < 20; ++i) {
         // fill the empty network object with cells
         std::cout << "Constructing net" << i << "..." << std::endl;
-        net.populate(5, 2.5);  // not being further reduced
+        net.populate(20, 10.0);  // subject to spatial downsampling
         std::cout << "Number of cells: " << net.getCells().size() << std::endl;
 
         // create network directory

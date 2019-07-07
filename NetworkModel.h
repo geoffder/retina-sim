@@ -73,9 +73,13 @@ public:
         return std::make_tuple(origin[0], origin[1]);
     }
 
-    void populate(const int spacing, double jitter) {
+    void populate(int spacing, double jitter) {
         double theta, radius;
         std::array<double, 2> pos = {0, 0};
+
+        // spatial downsampling
+        spacing = spacing/dims[2];
+        jitter = jitter/dims[2];
 
         // Regularly spaced axes giving the default layout of cells in the network.
         Eigen::VectorXd xgridvec = Eigen::VectorXd::LinSpaced((reduX-margin*2)/spacing, margin, reduX-margin);
